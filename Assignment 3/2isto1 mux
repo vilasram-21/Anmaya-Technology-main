@@ -1,0 +1,33 @@
+Design code
+
+module mux2to1 (
+    input wire A, B,
+    input wire sel,
+    output wire Y
+);
+    assign Y = (sel == 1'b0) ? A : B;
+endmodule
+
+
+Test bench
+
+`timescale 1ns / 1ps
+
+module tb_mux2to1;
+    reg A, B, sel;
+    wire Y;
+
+    mux2to1 uut (.A(A), .B(B), .sel(sel), .Y(Y));
+
+    initial begin
+        $dumpfile("mux2to1.vcd");
+        $dumpvars(0, tb_mux2to1);
+
+        A = 0; B = 1;
+
+        sel = 0; #10;  // Expect Y = A = 0
+        sel = 1; #10;  // Expect Y = B = 1
+
+        $finish;
+    end
+endmodule

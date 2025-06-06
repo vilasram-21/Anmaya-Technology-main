@@ -1,0 +1,49 @@
+Design
+
+module up_down_counter (
+    input clk, reset, up_down,
+    output reg [3:0] count
+);
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            count <= 0;
+        else if (up_down)
+            count <= count + 1;
+        else
+            count <= count - 1;
+    end
+endmodule
+
+
+
+
+
+
+
+Test bench
+
+`timescale 1ns / 1ps
+
+module tb_up_down_counter;
+    reg clk, reset, up_down;
+    wire [3:0] count;
+
+    up_down_counter uut (.clk(clk), .reset(reset), .up_down(up_down), .count(count));
+
+    initial begin
+        $dumpfile("up_down_counter.vcd");
+        $dumpvars(0, tb_up_down_counter);
+
+        clk = 0;
+        reset = 1; up_down = 1; #5; reset = 0;
+
+        // Count up
+        repeat(5) begin #5 clk = ~clk; #5 clk = ~clk; end
+
+        // Change to down
+        up_down = 0;
+        repeat(3) begin #5 clk = ~clk; #5 clk = ~clk; end
+
+        $finish;
+    end
+endmodule

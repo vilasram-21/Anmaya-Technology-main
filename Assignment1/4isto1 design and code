@@ -1,0 +1,47 @@
+Design code
+
+module mux4to1 (
+    input wire I0, I1, I2, I3,
+    input wire [1:0] sel,
+    output wire out
+);
+    assign out = (sel == 2'b00) ? I0 :
+                 (sel == 2'b01) ? I1 :
+                 (sel == 2'b10) ? I2 :
+                 I3;
+endmodule
+
+
+Test bench code
+
+`timescale 1ns / 1ps
+
+module tb_mux4to1;
+    reg I0, I1, I2, I3;
+    reg [1:0] sel;
+    wire out;
+
+    // Instantiate the multiplexer
+    mux4to1 uut (
+        .I0(I0), .I1(I1), .I2(I2), .I3(I3),
+        .sel(sel),
+        .out(out)
+    );
+
+    initial begin
+        // Dump file setup for waveform viewing
+        $dumpfile("mux4to1.vcd");
+        $dumpvars(0, tb_mux4to1);
+
+        // Initialize inputs
+        I0 = 0; I1 = 1; I2 = 0; I3 = 1;
+
+        // Stimulus
+        sel = 2'b00; #10;  // I0 -> 0
+        sel = 2'b01; #10;  // I1 -> 1
+        sel = 2'b10; #10;  // I2 -> 0
+        sel = 2'b11; #10;  // I3 -> 1
+
+        $finish;
+    end
+endmodule

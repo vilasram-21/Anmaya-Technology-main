@@ -1,0 +1,46 @@
+Design code
+
+  module d_flip_flop (
+input clk,
+input rst,       
+input d,
+output reg q
+);
+always @(posedge clk or posedge rst) begin
+if (rst)
+q <= 1'b0;
+else
+q <= d;
+end
+endmodule
+
+Test Bench
+
+  `timescale 1ns / 1ps
+module d_flip_flop_tb;
+reg clk, rst, d;
+wire q;
+
+d_flip_flop uut (
+.clk(clk),
+.rst(rst),
+.d(d),
+.q(q)
+);
+always #5 clk = ~clk;
+initial begin
+clk = 0;
+rst = 1;
+d = 0;
+$dumpfile("dff.vcd");
+$dumpvars(0);
+#10 rst = 0; d = 1;
+#10 d = 0;
+#10 d = 1;
+#10 d = 1;
+#10 rst = 1; 
+#10 rst = 0; d = 0;
+#10 d = 1;
+#30 $finish;
+end
+endmodule
